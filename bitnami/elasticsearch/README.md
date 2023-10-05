@@ -20,6 +20,8 @@ This chart bootstraps a [Elasticsearch](https://github.com/bitnami/containers/tr
 
 Bitnami charts can be used with [Kubeapps](https://kubeapps.dev/) for deployment and management of Helm Charts in clusters.
 
+Looking to use Elasticsearch in production? Try [VMware Application Catalog](https://bitnami.com/enterprise), the enterprise edition of Bitnami Application Catalog.
+
 ## Prerequisites
 
 - Kubernetes 1.19+
@@ -106,7 +108,7 @@ helm delete --purge my-release
 | `useIstioLabels`                           | Use this variable to add Istio labels to all pods                                                                                                   | `true`                         |
 | `image.registry`                           | Elasticsearch image registry                                                                                                                        | `docker.io`                    |
 | `image.repository`                         | Elasticsearch image repository                                                                                                                      | `bitnami/elasticsearch`        |
-| `image.tag`                                | Elasticsearch image tag (immutable tags are recommended)                                                                                            | `8.8.0-debian-11-r0`           |
+| `image.tag`                                | Elasticsearch image tag (immutable tags are recommended)                                                                                            | `8.10.2-debian-11-r6`          |
 | `image.digest`                             | Elasticsearch image digest in the way sha256:aa.... Please note this parameter, if set, will override the tag                                       | `""`                           |
 | `image.pullPolicy`                         | Elasticsearch image pull policy                                                                                                                     | `IfNotPresent`                 |
 | `image.pullSecrets`                        | Elasticsearch image pull secrets                                                                                                                    | `[]`                           |
@@ -211,7 +213,7 @@ helm delete --purge my-release
 | `master.startupProbe.successThreshold`               | Minimum consecutive successes for the probe to be considered successful after having failed (master nodes pod)                                     | `1`                 |
 | `master.startupProbe.failureThreshold`               | Minimum consecutive failures for the probe to be considered failed after having succeeded                                                          | `5`                 |
 | `master.livenessProbe.enabled`                       | Enable/disable the liveness probe (master-eligible nodes pod)                                                                                      | `true`              |
-| `master.livenessProbe.initialDelaySeconds`           | Delay before liveness probe is initiated (master-eligible nodes pod)                                                                               | `90`                |
+| `master.livenessProbe.initialDelaySeconds`           | Delay before liveness probe is initiated (master-eligible nodes pod)                                                                               | `180`               |
 | `master.livenessProbe.periodSeconds`                 | How often to perform the probe (master-eligible nodes pod)                                                                                         | `10`                |
 | `master.livenessProbe.timeoutSeconds`                | When the probe times out (master-eligible nodes pod)                                                                                               | `5`                 |
 | `master.livenessProbe.successThreshold`              | Minimum consecutive successes for the probe to be considered successful after having failed (master-eligible nodes pod)                            | `1`                 |
@@ -298,7 +300,7 @@ helm delete --purge my-release
 | `data.startupProbe.successThreshold`               | Minimum consecutive successes for the probe to be considered successful after having failed (data nodes pod)                                     | `1`                 |
 | `data.startupProbe.failureThreshold`               | Minimum consecutive failures for the probe to be considered failed after having succeeded                                                        | `5`                 |
 | `data.livenessProbe.enabled`                       | Enable/disable the liveness probe (data nodes pod)                                                                                               | `true`              |
-| `data.livenessProbe.initialDelaySeconds`           | Delay before liveness probe is initiated (data nodes pod)                                                                                        | `90`                |
+| `data.livenessProbe.initialDelaySeconds`           | Delay before liveness probe is initiated (data nodes pod)                                                                                        | `180`               |
 | `data.livenessProbe.periodSeconds`                 | How often to perform the probe (data nodes pod)                                                                                                  | `10`                |
 | `data.livenessProbe.timeoutSeconds`                | When the probe times out (data nodes pod)                                                                                                        | `5`                 |
 | `data.livenessProbe.successThreshold`              | Minimum consecutive successes for the probe to be considered successful after having failed (data nodes pod)                                     | `1`                 |
@@ -345,6 +347,7 @@ helm delete --purge my-release
 | Name                                                       | Description                                                                                                               | Value           |
 | ---------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------- | --------------- |
 | `coordinating.replicaCount`                                | Number of coordinating-only replicas to deploy                                                                            | `2`             |
+| `coordinating.extraRoles`                                  | Append extra roles to the node role                                                                                       | `[]`            |
 | `coordinating.pdb.create`                                  | Enable/disable a Pod Disruption Budget creation                                                                           | `false`         |
 | `coordinating.pdb.minAvailable`                            | Minimum number/percentage of pods that should remain scheduled                                                            | `1`             |
 | `coordinating.pdb.maxUnavailable`                          | Maximum number/percentage of pods that may be made unavailable                                                            | `""`            |
@@ -384,7 +387,7 @@ helm delete --purge my-release
 | `coordinating.startupProbe.successThreshold`               | Minimum consecutive successes for the probe to be considered successful after having failed (coordinating-only nodes pod) | `1`             |
 | `coordinating.startupProbe.failureThreshold`               | Minimum consecutive failures for the probe to be considered failed after having succeeded                                 | `5`             |
 | `coordinating.livenessProbe.enabled`                       | Enable/disable the liveness probe (coordinating-only nodes pod)                                                           | `true`          |
-| `coordinating.livenessProbe.initialDelaySeconds`           | Delay before liveness probe is initiated (coordinating-only nodes pod)                                                    | `90`            |
+| `coordinating.livenessProbe.initialDelaySeconds`           | Delay before liveness probe is initiated (coordinating-only nodes pod)                                                    | `180`           |
 | `coordinating.livenessProbe.periodSeconds`                 | How often to perform the probe (coordinating-only nodes pod)                                                              | `10`            |
 | `coordinating.livenessProbe.timeoutSeconds`                | When the probe times out (coordinating-only nodes pod)                                                                    | `5`             |
 | `coordinating.livenessProbe.successThreshold`              | Minimum consecutive successes for the probe to be considered successful after having failed (coordinating-only nodes pod) | `1`             |
@@ -466,7 +469,7 @@ helm delete --purge my-release
 | `ingest.startupProbe.successThreshold`               | Minimum consecutive successes for the probe to be considered successful after having failed (ingest-only nodes pod)              | `1`                          |
 | `ingest.startupProbe.failureThreshold`               | Minimum consecutive failures for the probe to be considered failed after having succeeded                                        | `5`                          |
 | `ingest.livenessProbe.enabled`                       | Enable/disable the liveness probe (ingest-only nodes pod)                                                                        | `true`                       |
-| `ingest.livenessProbe.initialDelaySeconds`           | Delay before liveness probe is initiated (ingest-only nodes pod)                                                                 | `90`                         |
+| `ingest.livenessProbe.initialDelaySeconds`           | Delay before liveness probe is initiated (ingest-only nodes pod)                                                                 | `180`                        |
 | `ingest.livenessProbe.periodSeconds`                 | How often to perform the probe (ingest-only nodes pod)                                                                           | `10`                         |
 | `ingest.livenessProbe.timeoutSeconds`                | When the probe times out (ingest-only nodes pod)                                                                                 | `5`                          |
 | `ingest.livenessProbe.successThreshold`              | Minimum consecutive successes for the probe to be considered successful after having failed (ingest-only nodes pod)              | `1`                          |
@@ -537,7 +540,7 @@ helm delete --purge my-release
 | `metrics.fullnameOverride`                      | String to fully override common.names.fullname                                                                                 | `""`                             |
 | `metrics.image.registry`                        | Metrics exporter image registry                                                                                                | `docker.io`                      |
 | `metrics.image.repository`                      | Metrics exporter image repository                                                                                              | `bitnami/elasticsearch-exporter` |
-| `metrics.image.tag`                             | Metrics exporter image tag                                                                                                     | `1.5.0-debian-11-r102`           |
+| `metrics.image.tag`                             | Metrics exporter image tag                                                                                                     | `1.6.0-debian-11-r83`            |
 | `metrics.image.digest`                          | Metrics exporter image digest in the way sha256:aa.... Please note this parameter, if set, will override the tag               | `""`                             |
 | `metrics.image.pullPolicy`                      | Metrics exporter image pull policy                                                                                             | `IfNotPresent`                   |
 | `metrics.image.pullSecrets`                     | Metrics exporter image pull secrets                                                                                            | `[]`                             |
@@ -614,26 +617,26 @@ helm delete --purge my-release
 
 ### Init Container Parameters
 
-| Name                                   | Description                                                                                                                                               | Value                   |
-| -------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------- |
-| `volumePermissions.enabled`            | Enable init container that changes volume permissions in the data directory (for cases where the default k8s `runAsUser` and `fsUser` values do not work) | `false`                 |
-| `volumePermissions.image.registry`     | Init container volume-permissions image registry                                                                                                          | `docker.io`             |
-| `volumePermissions.image.repository`   | Init container volume-permissions image name                                                                                                              | `bitnami/bitnami-shell` |
-| `volumePermissions.image.tag`          | Init container volume-permissions image tag                                                                                                               | `11-debian-11-r119`     |
-| `volumePermissions.image.digest`       | Init container volume-permissions image digest in the way sha256:aa.... Please note this parameter, if set, will override the tag                         | `""`                    |
-| `volumePermissions.image.pullPolicy`   | Init container volume-permissions image pull policy                                                                                                       | `IfNotPresent`          |
-| `volumePermissions.image.pullSecrets`  | Init container volume-permissions image pull secrets                                                                                                      | `[]`                    |
-| `volumePermissions.resources.limits`   | The resources limits for the container                                                                                                                    | `{}`                    |
-| `volumePermissions.resources.requests` | The requested resources for the container                                                                                                                 | `{}`                    |
-| `sysctlImage.enabled`                  | Enable kernel settings modifier image                                                                                                                     | `true`                  |
-| `sysctlImage.registry`                 | Kernel settings modifier image registry                                                                                                                   | `docker.io`             |
-| `sysctlImage.repository`               | Kernel settings modifier image repository                                                                                                                 | `bitnami/bitnami-shell` |
-| `sysctlImage.tag`                      | Kernel settings modifier image tag                                                                                                                        | `11-debian-11-r119`     |
-| `sysctlImage.digest`                   | Kernel settings modifier image digest in the way sha256:aa.... Please note this parameter, if set, will override the tag                                  | `""`                    |
-| `sysctlImage.pullPolicy`               | Kernel settings modifier image pull policy                                                                                                                | `IfNotPresent`          |
-| `sysctlImage.pullSecrets`              | Kernel settings modifier image pull secrets                                                                                                               | `[]`                    |
-| `sysctlImage.resources.limits`         | The resources limits for the container                                                                                                                    | `{}`                    |
-| `sysctlImage.resources.requests`       | The requested resources for the container                                                                                                                 | `{}`                    |
+| Name                                   | Description                                                                                                                                               | Value              |
+| -------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------ |
+| `volumePermissions.enabled`            | Enable init container that changes volume permissions in the data directory (for cases where the default k8s `runAsUser` and `fsUser` values do not work) | `false`            |
+| `volumePermissions.image.registry`     | Init container volume-permissions image registry                                                                                                          | `docker.io`        |
+| `volumePermissions.image.repository`   | Init container volume-permissions image name                                                                                                              | `bitnami/os-shell` |
+| `volumePermissions.image.tag`          | Init container volume-permissions image tag                                                                                                               | `11-debian-11-r77` |
+| `volumePermissions.image.digest`       | Init container volume-permissions image digest in the way sha256:aa.... Please note this parameter, if set, will override the tag                         | `""`               |
+| `volumePermissions.image.pullPolicy`   | Init container volume-permissions image pull policy                                                                                                       | `IfNotPresent`     |
+| `volumePermissions.image.pullSecrets`  | Init container volume-permissions image pull secrets                                                                                                      | `[]`               |
+| `volumePermissions.resources.limits`   | The resources limits for the container                                                                                                                    | `{}`               |
+| `volumePermissions.resources.requests` | The requested resources for the container                                                                                                                 | `{}`               |
+| `sysctlImage.enabled`                  | Enable kernel settings modifier image                                                                                                                     | `true`             |
+| `sysctlImage.registry`                 | Kernel settings modifier image registry                                                                                                                   | `docker.io`        |
+| `sysctlImage.repository`               | Kernel settings modifier image repository                                                                                                                 | `bitnami/os-shell` |
+| `sysctlImage.tag`                      | Kernel settings modifier image tag                                                                                                                        | `11-debian-11-r77` |
+| `sysctlImage.digest`                   | Kernel settings modifier image digest in the way sha256:aa.... Please note this parameter, if set, will override the tag                                  | `""`               |
+| `sysctlImage.pullPolicy`               | Kernel settings modifier image pull policy                                                                                                                | `IfNotPresent`     |
+| `sysctlImage.pullSecrets`              | Kernel settings modifier image pull secrets                                                                                                               | `[]`               |
+| `sysctlImage.resources.limits`         | The resources limits for the container                                                                                                                    | `{}`               |
+| `sysctlImage.resources.requests`       | The requested resources for the container                                                                                                                 | `{}`               |
 
 ### Kibana Parameters
 
@@ -733,6 +736,33 @@ kibana:
       tls:
         enabled: true
 ```
+
+### How to deploy a single node
+
+This chart allows you to deploy Elasticsearch as a "single-node" cluster (one master node replica) that assumes all the roles. The following inputs should be provided:
+
+```yaml
+master:
+  masterOnly: false
+  replicaCount: 1
+data:
+  replicaCount: 0
+coordinating:
+  replicaCount: 0
+ingest:
+  replicaCount: 0
+```
+
+The "single-node" cluster will be configured with [single-node discovery](https://www.elastic.co/guide/en/elasticsearch/reference/current/bootstrap-checks.html#single-node-discovery).
+
+If you want to scale up to more replicas, make sure you refresh the configuration of the existing StatefulSet. For example, scale down to 0 replicas first to avoid inconsistencies in the configuration:
+
+```console
+kubectl scale statefulset <DEPLOYMENT_NAME>-master --replicas=0
+helm upgrade <DEPLOYMENT_NAME> oci://registry-1.docker.io/bitnamicharts/elasticsearch --reset-values --set master.masterOnly=false
+```
+
+Please note that the master nodes should continue assuming all the roles (`master.masterOnly: false`) since there is shard data on the first replica.
 
 ### Adding extra environment variables
 
@@ -971,7 +1001,7 @@ kubectl delete statefulset elasticsearch-data --cascade=false
 
 ## License
 
-Copyright &copy; 2023 VMware Inc
+Copyright &copy; 2023 VMware, Inc.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.

@@ -20,6 +20,8 @@ This chart bootstraps a [Parse](https://github.com/bitnami/containers/tree/main/
 
 Bitnami charts can be used with [Kubeapps](https://kubeapps.dev/) for deployment and management of Helm Charts in clusters.
 
+Looking to use Parse Server in production? Try [VMware Application Catalog](https://bitnami.com/enterprise), the enterprise edition of Bitnami Application Catalog.
+
 ## Prerequisites
 
 - Kubernetes 1.19+
@@ -80,7 +82,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | -------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------ | -------------------- |
 | `server.image.registry`                                  | Parse image registry                                                                                                     | `docker.io`          |
 | `server.image.repository`                                | Parse image repository                                                                                                   | `bitnami/parse`      |
-| `server.image.tag`                                       | Parse image tag (immutable tags are recommended)                                                                         | `6.2.0-debian-11-r0` |
+| `server.image.tag`                                       | Parse image tag (immutable tags are recommended)                                                                         | `6.3.0-debian-11-r8` |
 | `server.image.digest`                                    | Parse image digest in the way sha256:aa.... Please note this parameter, if set, will override the tag                    | `""`                 |
 | `server.image.pullPolicy`                                | Image pull policy                                                                                                        | `IfNotPresent`       |
 | `server.image.pullSecrets`                               | Specify docker-registry secret names as an array                                                                         | `[]`                 |
@@ -165,7 +167,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | `dashboard.enabled`                                         | Enable parse dashboard                                                                                                   | `true`                    |
 | `dashboard.image.registry`                                  | Dashboard image registry                                                                                                 | `docker.io`               |
 | `dashboard.image.repository`                                | Dashboard image repository                                                                                               | `bitnami/parse-dashboard` |
-| `dashboard.image.tag`                                       | Dashboard image tag (immutable tags are recommended)                                                                     | `5.1.0-debian-11-r6`      |
+| `dashboard.image.tag`                                       | Dashboard image tag (immutable tags are recommended)                                                                     | `5.2.0-debian-11-r8`      |
 | `dashboard.image.digest`                                    | Dashboard image digest in the way sha256:aa.... Please note this parameter, if set, will override the tag                | `""`                      |
 | `dashboard.image.pullPolicy`                                | image pull policy                                                                                                        | `IfNotPresent`            |
 | `dashboard.image.pullSecrets`                               | Specify docker-registry secret names as an array                                                                         | `[]`                      |
@@ -280,20 +282,20 @@ The command removes all the Kubernetes components associated with the chart and 
 
 ### Volume Permissions parameters
 
-| Name                                          | Description                                                                                                                                               | Value                   |
-| --------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------- |
-| `volumePermissions.enabled`                   | Enable init container that changes volume permissions in the data directory (for cases where the default k8s `runAsUser` and `fsUser` values do not work) | `false`                 |
-| `volumePermissions.image.registry`            | Init container volume-permissions image registry                                                                                                          | `docker.io`             |
-| `volumePermissions.image.repository`          | Init container volume-permissions image name                                                                                                              | `bitnami/bitnami-shell` |
-| `volumePermissions.image.tag`                 | Init container volume-permissions image tag                                                                                                               | `11-debian-11-r118`     |
-| `volumePermissions.image.digest`              | Init container volume-permissions image digest in the way sha256:aa.... Please note this parameter, if set, will override the tag                         | `""`                    |
-| `volumePermissions.image.pullPolicy`          | Init container volume-permissions image pull policy                                                                                                       | `IfNotPresent`          |
-| `volumePermissions.image.pullSecrets`         | Init container volume-permissions image pull secrets                                                                                                      | `[]`                    |
-| `volumePermissions.resources`                 | The resources for the container                                                                                                                           | `{}`                    |
-| `serviceAccount.create`                       | Specifies whether a ServiceAccount should be created                                                                                                      | `true`                  |
-| `serviceAccount.name`                         | The name of the ServiceAccount to use.                                                                                                                    | `""`                    |
-| `serviceAccount.annotations`                  | Additional Service Account annotations (evaluated as a template)                                                                                          | `{}`                    |
-| `serviceAccount.automountServiceAccountToken` | Automount service account token for the server service account                                                                                            | `true`                  |
+| Name                                          | Description                                                                                                                                               | Value              |
+| --------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------ |
+| `volumePermissions.enabled`                   | Enable init container that changes volume permissions in the data directory (for cases where the default k8s `runAsUser` and `fsUser` values do not work) | `false`            |
+| `volumePermissions.image.registry`            | Init container volume-permissions image registry                                                                                                          | `docker.io`        |
+| `volumePermissions.image.repository`          | Init container volume-permissions image name                                                                                                              | `bitnami/os-shell` |
+| `volumePermissions.image.tag`                 | Init container volume-permissions image tag                                                                                                               | `11-debian-11-r77` |
+| `volumePermissions.image.digest`              | Init container volume-permissions image digest in the way sha256:aa.... Please note this parameter, if set, will override the tag                         | `""`               |
+| `volumePermissions.image.pullPolicy`          | Init container volume-permissions image pull policy                                                                                                       | `IfNotPresent`     |
+| `volumePermissions.image.pullSecrets`         | Init container volume-permissions image pull secrets                                                                                                      | `[]`               |
+| `volumePermissions.resources`                 | The resources for the container                                                                                                                           | `{}`               |
+| `serviceAccount.create`                       | Specifies whether a ServiceAccount should be created                                                                                                      | `true`             |
+| `serviceAccount.name`                         | The name of the ServiceAccount to use.                                                                                                                    | `""`               |
+| `serviceAccount.annotations`                  | Additional Service Account annotations (evaluated as a template)                                                                                          | `{}`               |
+| `serviceAccount.automountServiceAccountToken` | Automount service account token for the server service account                                                                                            | `true`             |
 
 ### MongoDB&reg; Parameters
 
@@ -401,7 +403,7 @@ extraDeploy: |-
     metadata:
       name: {{ include "common.names.fullname" . }}-privileged
       namespace: {{ .Release.Namespace }}
-      labels: {{- include "common.labels.standard" . | nindent 6 }}
+      labels: {{- include "common.labels.standard" ( dict "customLabels" .Values.commonLabels "context" $ ) | nindent 6 }}
     roleRef:
       apiGroup: rbac.authorization.k8s.io
       kind: ClusterRole
@@ -423,6 +425,10 @@ As an alternative, you can use of the preset configurations for pod affinity, po
 Find more information about how to deal with common errors related to Bitnami's Helm charts in [this troubleshooting guide](https://docs.bitnami.com/general/how-to/troubleshoot-helm-chart-issues).
 
 ## Upgrading
+
+### To 21.0.0
+
+This major updates the MongoDB&reg; subchart to its newest major, [14.0.0](https://github.com/bitnami/charts/tree/main/bitnami/mongodb#to-1400). No major issues are expected during the upgrade.
 
 ### To 19.0.0
 
@@ -533,7 +539,7 @@ kubectl patch deployment parse-mongodb --type=json -p='[{"op": "remove", "path":
 
 ## License
 
-Copyright &copy; 2023 VMware Inc
+Copyright &copy; 2023 VMware, Inc.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.

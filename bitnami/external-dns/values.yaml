@@ -1,3 +1,6 @@
+# Copyright VMware, Inc.
+# SPDX-License-Identifier: APACHE-2.0
+
 ## @section Global parameters
 ## Global Docker image parameters
 ## Please, note that this will override the image parameters, including dependencies, configured to use the global value
@@ -64,7 +67,7 @@ useDaemonset: false
 image:
   registry: docker.io
   repository: bitnami/external-dns
-  tag: 0.13.4-debian-11-r19
+  tag: 0.13.6-debian-11-r26
   digest: ""
   ## Specify a imagePullPolicy
   ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
@@ -248,6 +251,14 @@ aws:
   ## @param aws.evaluateTargetHealth When using the AWS provider, sets the evaluate target health flag (options: true, false)
   ##
   evaluateTargetHealth: ""
+  ## @param aws.dynamodbTable When using the AWS provider, sets the DynamoDB table name to use for dynamodb registry
+  ## ref: https://github.com/kubernetes-sigs/external-dns/blob/0483ffde22e60436f16be154b9fe1a388a1400d0/docs/registry/dynamodb.md
+  ##
+  dynamodbTable: ""
+  ## @param aws.dynamodbRegion When using the AWS provider, sets the DynamoDB table region to use for dynamodb registry
+  ## ref: https://github.com/kubernetes-sigs/external-dns/blob/0483ffde22e60436f16be154b9fe1a388a1400d0/docs/registry/dynamodb.md
+  ##
+  dynamodbRegion: ""
 ## Azure configuration to be set via arguments/env. variables
 ##
 azure:
@@ -273,6 +284,9 @@ azure:
   ## @param azure.aadClientSecret When using the Azure provider, set the Azure AAD Client Secret
   ##
   aadClientSecret: ""
+  ## @param azure.useWorkloadIdentityExtension When using the Azure provider, set if you use Workload Identity extension.
+  ##
+  useWorkloadIdentityExtension: false
   ## @param azure.useManagedIdentityExtension When using the Azure provider, set if you use Azure MSI
   ##
   useManagedIdentityExtension: false
@@ -586,7 +600,7 @@ rfc2136:
   ## @param rfc2136.tsigSecret When using the rfc2136 provider, specify the tsig secret to enable security. (do not specify if `rfc2136.secretName` is provided.) (optional)
   ##
   tsigSecret: ""
-  ## @param rfc2136.secretName When using the rfc2136 provider, specify the existing secret which contains your tsig secret. Disables the usage of `rfc2136.tsigSecret` (optional)
+  ## @param rfc2136.secretName When using the rfc2136 provider, specify the existing secret which contains your tsig secret in the key "rfc2136_tsig_secret". Disables the usage of `rfc2136.tsigSecret` (optional)
   ##
   secretName: ""
   ## @param rfc2136.tsigSecretAlg When using the rfc2136 provider, specify the tsig secret to enable security (optional)
@@ -594,7 +608,7 @@ rfc2136:
   tsigSecretAlg: hmac-sha256
   ## @param rfc2136.tsigKeyname When using the rfc2136 provider, specify the tsig keyname to enable security (optional)
   ##
-  tsigKeyname: externaldns-key
+  tsigKeyname: rfc2136_tsig_secret
   ## @param rfc2136.tsigAxfr When using the rfc2136 provider, enable AFXR to enable security (optional)
   ##
   tsigAxfr: true
@@ -679,6 +693,12 @@ annotationFilter: ""
 ## @param labelFilter Select sources managed by external-dns using label selector (optional)
 ##
 labelFilter: ""
+## @param ingressClassFilters Filter sources managed by external-dns via IngressClass (optional)
+##
+ingressClassFilters: []
+## @param managedRecordTypesFilters Filter record types managed by external-dns (optional)
+##
+managedRecordTypesFilters: []
 ## @param dryRun When enabled, prints DNS record changes rather than actually performing them (optional)
 ##
 dryRun: false
@@ -697,7 +717,7 @@ logFormat: text
 ## @param policy Modify how DNS records are synchronized between sources and providers (options: sync, upsert-only )
 ##
 policy: upsert-only
-## @param registry Registry method to use (options: txt, aws-sd, noop)
+## @param registry Registry method to use (options: txt, aws-sd, dynamodb, noop)
 ## ref: https://github.com/kubernetes-sigs/external-dns/blob/master/docs/proposal/registry.md
 ##
 registry: "txt"
@@ -843,6 +863,9 @@ service:
   ## @param service.externalIPs Service external IP addresses
   ##
   externalIPs: []
+  ## @param service.externalName Service external name
+  ##
+  externalName: ""
   ## @param service.loadBalancerIP IP address to assign to load balancer (if supported)
   ##
   loadBalancerIP: ""

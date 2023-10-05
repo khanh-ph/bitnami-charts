@@ -24,6 +24,8 @@ Bitnami charts can be used with [Kubeapps](https://kubeapps.dev/) for deployment
 
 [Learn more about the default configuration of the chart](https://docs.bitnami.com/kubernetes/infrastructure/prometheus/get-started/).
 
+Looking to use Prometheus in production? Try [VMware Application Catalog](https://bitnami.com/enterprise), the enterprise edition of Bitnami Application Catalog.
+
 ## Prerequisites
 
 - Kubernetes 1.19+
@@ -87,7 +89,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | `alertmanager.enabled`                                         | Alertmanager enabled                                                                                                                                    | `true`                          |
 | `alertmanager.image.registry`                                  | Alertmanager image registry                                                                                                                             | `docker.io`                     |
 | `alertmanager.image.repository`                                | Alertmanager image repository                                                                                                                           | `bitnami/alertmanager`          |
-| `alertmanager.image.tag`                                       | Alertmanager image tag (immutable tags are recommended)                                                                                                 | `0.25.0-debian-11-r50`          |
+| `alertmanager.image.tag`                                       | Alertmanager image tag (immutable tags are recommended)                                                                                                 | `0.26.0-debian-11-r38`          |
 | `alertmanager.image.digest`                                    | Alertmanager image digest in the way sha256:aa.... Please note this parameter, if set, will override the tag image tag (immutable tags are recommended) | `""`                            |
 | `alertmanager.image.pullPolicy`                                | Alertmanager image pull policy                                                                                                                          | `IfNotPresent`                  |
 | `alertmanager.image.pullSecrets`                               | Alertmanager image pull secrets                                                                                                                         | `[]`                            |
@@ -180,6 +182,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | `alertmanager.service.nodePorts.http`                          | Node port for HTTP                                                                                                                                      | `""`                            |
 | `alertmanager.service.clusterIP`                               | Alertmanager service Cluster IP                                                                                                                         | `""`                            |
 | `alertmanager.service.loadBalancerIP`                          | Alertmanager service Load Balancer IP                                                                                                                   | `""`                            |
+| `alertmanager.service.loadBalancerClass`                       | Alertmanager service Load Balancer class if service type is `LoadBalancer` (optional, cloud specific)                                                   | `""`                            |
 | `alertmanager.service.loadBalancerSourceRanges`                | Alertmanager service Load Balancer sources                                                                                                              | `[]`                            |
 | `alertmanager.service.externalTrafficPolicy`                   | Alertmanager service external traffic policy                                                                                                            | `Cluster`                       |
 | `alertmanager.service.annotations`                             | Additional custom annotations for Alertmanager service                                                                                                  | `{}`                            |
@@ -201,7 +204,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | ----------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------- |
 | `server.image.registry`                                           | Prometheus image registry                                                                                                                                                                   | `docker.io`                |
 | `server.image.repository`                                         | Prometheus image repository                                                                                                                                                                 | `bitnami/prometheus`       |
-| `server.image.tag`                                                | Prometheus image tag (immutable tags are recommended)                                                                                                                                       | `2.44.0-debian-11-r3`      |
+| `server.image.tag`                                                | Prometheus image tag (immutable tags are recommended)                                                                                                                                       | `2.47.1-debian-11-r0`      |
 | `server.image.digest`                                             | Prometheus image digest in the way sha256:aa.... Please note this parameter, if set, will override the tag image tag (immutable tags are recommended)                                       | `""`                       |
 | `server.image.pullPolicy`                                         | Prometheus image pull policy                                                                                                                                                                | `IfNotPresent`             |
 | `server.image.pullSecrets`                                        | Prometheus image pull secrets                                                                                                                                                               | `[]`                       |
@@ -288,7 +291,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | `server.thanos.create`                                            | Create a Thanos sidecar container                                                                                                                                                           | `false`                    |
 | `server.thanos.image.registry`                                    | Thanos image registry                                                                                                                                                                       | `docker.io`                |
 | `server.thanos.image.repository`                                  | Thanos image name                                                                                                                                                                           | `bitnami/thanos`           |
-| `server.thanos.image.tag`                                         | Thanos image tag                                                                                                                                                                            | `0.31.0-scratch-r5`        |
+| `server.thanos.image.tag`                                         | Thanos image tag                                                                                                                                                                            | `0.32.4-debian-11-r0`      |
 | `server.thanos.image.digest`                                      | Thanos image digest in the way sha256:aa.... Please note this parameter, if set, will override the tag                                                                                      | `""`                       |
 | `server.thanos.image.pullPolicy`                                  | Thanos image pull policy                                                                                                                                                                    | `IfNotPresent`             |
 | `server.thanos.image.pullSecrets`                                 | Specify docker-registry secret names as an array                                                                                                                                            | `[]`                       |
@@ -323,6 +326,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | `server.thanos.service.clusterIP`                                 | Specific cluster IP when service type is cluster IP. Use `None` to create headless service by default.                                                                                      | `None`                     |
 | `server.thanos.service.nodePorts.grpc`                            | Specify the nodePort value for the LoadBalancer and NodePort service types.                                                                                                                 | `""`                       |
 | `server.thanos.service.loadBalancerIP`                            | `loadBalancerIP` if service type is `LoadBalancer`                                                                                                                                          | `""`                       |
+| `server.thanos.service.loadBalancerClass`                         | Thanos service Load Balancer class if service type is `LoadBalancer` (optional, cloud specific)                                                                                             | `""`                       |
 | `server.thanos.service.loadBalancerSourceRanges`                  | Address that are allowed when svc is `LoadBalancer`                                                                                                                                         | `[]`                       |
 | `server.thanos.service.annotations`                               | Additional annotations for Prometheus service                                                                                                                                               | `{}`                       |
 | `server.thanos.service.extraPorts`                                | Additional ports to expose from the Thanos sidecar container                                                                                                                                | `[]`                       |
@@ -364,6 +368,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | `server.service.nodePorts.http`                                   | Node port for HTTP                                                                                                                                                                          | `""`                       |
 | `server.service.clusterIP`                                        | Prometheus service Cluster IP                                                                                                                                                               | `""`                       |
 | `server.service.loadBalancerIP`                                   | Prometheus service Load Balancer IP                                                                                                                                                         | `""`                       |
+| `server.service.loadBalancerClass`                                | Prometheus service Load Balancer class if service type is `LoadBalancer` (optional, cloud specific)                                                                                         | `""`                       |
 | `server.service.loadBalancerSourceRanges`                         | Prometheus service Load Balancer sources                                                                                                                                                    | `[]`                       |
 | `server.service.externalTrafficPolicy`                            | Prometheus service external traffic policy                                                                                                                                                  | `Cluster`                  |
 | `server.service.annotations`                                      | Additional custom annotations for Prometheus service                                                                                                                                        | `{}`                       |
@@ -385,17 +390,17 @@ The command removes all the Kubernetes components associated with the chart and 
 
 ### Init Container Parameters
 
-| Name                                                   | Description                                                                                     | Value                   |
-| ------------------------------------------------------ | ----------------------------------------------------------------------------------------------- | ----------------------- |
-| `volumePermissions.enabled`                            | Enable init container that changes the owner/group of the PV mount point to `runAsUser:fsGroup` | `false`                 |
-| `volumePermissions.image.registry`                     | Bitnami Shell image registry                                                                    | `docker.io`             |
-| `volumePermissions.image.repository`                   | Bitnami Shell image repository                                                                  | `bitnami/bitnami-shell` |
-| `volumePermissions.image.tag`                          | Bitnami Shell image tag (immutable tags are recommended)                                        | `11-debian-11-r118`     |
-| `volumePermissions.image.pullPolicy`                   | Bitnami Shell image pull policy                                                                 | `IfNotPresent`          |
-| `volumePermissions.image.pullSecrets`                  | Bitnami Shell image pull secrets                                                                | `[]`                    |
-| `volumePermissions.resources.limits`                   | The resources limits for the init container                                                     | `{}`                    |
-| `volumePermissions.resources.requests`                 | The requested resources for the init container                                                  | `{}`                    |
-| `volumePermissions.containerSecurityContext.runAsUser` | Set init container's Security Context runAsUser                                                 | `0`                     |
+| Name                                                   | Description                                                                                     | Value              |
+| ------------------------------------------------------ | ----------------------------------------------------------------------------------------------- | ------------------ |
+| `volumePermissions.enabled`                            | Enable init container that changes the owner/group of the PV mount point to `runAsUser:fsGroup` | `false`            |
+| `volumePermissions.image.registry`                     | OS Shell + Utility image registry                                                               | `docker.io`        |
+| `volumePermissions.image.repository`                   | OS Shell + Utility image repository                                                             | `bitnami/os-shell` |
+| `volumePermissions.image.tag`                          | OS Shell + Utility image tag (immutable tags are recommended)                                   | `11-debian-11-r86` |
+| `volumePermissions.image.pullPolicy`                   | OS Shell + Utility image pull policy                                                            | `IfNotPresent`     |
+| `volumePermissions.image.pullSecrets`                  | OS Shell + Utility image pull secrets                                                           | `[]`               |
+| `volumePermissions.resources.limits`                   | The resources limits for the init container                                                     | `{}`               |
+| `volumePermissions.resources.requests`                 | The requested resources for the init container                                                  | `{}`               |
+| `volumePermissions.containerSecurityContext.runAsUser` | Set init container's Security Context runAsUser                                                 | `0`                |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
@@ -662,7 +667,7 @@ Find more information about how to deal with common errors related to Bitnami's 
 
 ## License
 
-Copyright &copy; 2023 VMware Inc
+Copyright &copy; 2023 VMware, Inc.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.

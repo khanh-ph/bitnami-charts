@@ -20,6 +20,8 @@ This chart bootstraps [kube-state-metrics](https://github.com/bitnami/containers
 
 Bitnami charts can be used with [Kubeapps](https://kubeapps.dev/) for deployment and management of Helm Charts in clusters.
 
+Looking to use Kube State Metrics in production? Try [VMware Application Catalog](https://bitnami.com/enterprise), the enterprise edition of Bitnami Application Catalog.
+
 ## Prerequisites
 
 - Kubernetes 1.19+
@@ -83,7 +85,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | `serviceAccount.annotations`                    | Annotations for service account. Evaluated as a template. Only used if `create` is `true`.                                                                         | `{}`                         |
 | `image.registry`                                | kube-state-metrics image registry                                                                                                                                  | `docker.io`                  |
 | `image.repository`                              | kube-state-metrics image repository                                                                                                                                | `bitnami/kube-state-metrics` |
-| `image.tag`                                     | kube-state-metrics image tag (immutable tags are recommended)                                                                                                      | `2.9.2-debian-11-r0`         |
+| `image.tag`                                     | kube-state-metrics image tag (immutable tags are recommended)                                                                                                      | `2.10.0-debian-11-r31`       |
 | `image.digest`                                  | kube-state-metrics image digest in the way sha256:aa.... Please note this parameter, if set, will override the tag                                                 | `""`                         |
 | `image.pullPolicy`                              | kube-state-metrics image pull policy                                                                                                                               | `IfNotPresent`               |
 | `image.pullSecrets`                             | Specify docker-registry secret names as an array                                                                                                                   | `[]`                         |
@@ -196,6 +198,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | `serviceMonitor.metricRelabelings`              | ServiceMonitor metricRelabelings                                                                                                                                   | `[]`                         |
 | `serviceMonitor.labels`                         | Extra labels for the ServiceMonitor                                                                                                                                | `{}`                         |
 | `serviceMonitor.extraParameters`                | Any extra parameter to be added to the endpoint configured in the ServiceMonitor                                                                                   | `{}`                         |
+| `serviceMonitor.sampleLimit`                    | Per-scrape limit on number of scraped samples that will be accepted.                                                                                               | `""`                         |
 | `selfMonitor.enabled`                           | Creates a selfMonitor to monitor kube-state-metrics itself                                                                                                         | `false`                      |
 | `selfMonitor.telemetryPort`                     | Kube-state-metrics telemetry Port                                                                                                                                  | `8081`                       |
 | `selfMonitor.telemetryNodePort`                 | Kube-state-metrics Node Port                                                                                                                                       | `""`                         |
@@ -276,7 +279,7 @@ This version introduces `bitnami/common`, a [library chart](https://helm.sh/docs
 
 ## License
 
-Copyright &copy; 2023 VMware Inc
+Copyright &copy; 2023 VMware, Inc.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.

@@ -1,3 +1,8 @@
+{{/*
+Copyright VMware, Inc.
+SPDX-License-Identifier: APACHE-2.0
+*/}}
+
 {{/* vim: set filetype=mustache: */}}
 
 {{/*
@@ -211,6 +216,15 @@ Returns true if at least one ingest-only node replica has been configured.
 */}}
 {{- define "elasticsearch.ingest.enabled" -}}
 {{- if and .Values.ingest.enabled (or .Values.ingest.autoscaling.enabled (gt (int .Values.ingest.replicaCount) 0)) -}}
+    {{- true -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Returns true if only one master node replica has been configured to assume all the roles
+*/}}
+{{- define "elasticsearch.singleNode.enabled" -}}
+{{- if and (eq (int .Values.master.replicaCount) 1) (not (or .Values.master.masterOnly .Values.master.autoscaling.enabled (include "elasticsearch.data.enabled" .) (include "elasticsearch.coordinating.enabled" .) (include "elasticsearch.ingest.enabled" .))) -}}
     {{- true -}}
 {{- end -}}
 {{- end -}}

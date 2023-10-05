@@ -20,9 +20,11 @@ Bitnami charts for Helm are carefully engineered, actively maintained and are th
 
 This chart bootstraps a [ClickHouse](https://github.com/clickhouse/clickhouse) Deployment in a [Kubernetes](https://kubernetes.io) cluster using the [Helm](https://helm.sh) package manager.
 
-Bitnami charts can be used with [Kubeapps](https://kubeapps.com/) for deployment and management of Helm Charts in clusters.
+Bitnami charts can be used with [Kubeapps](https://kubeapps.dev/) for deployment and management of Helm Charts in clusters.
 
 [Learn more about the default configuration of the chart](https://docs.bitnami.com/kubernetes/infrastructure/clickhouse/get-started/).
+
+Looking to use ClickHouse in production? Try [VMware Application Catalog](https://bitnami.com/enterprise), the enterprise edition of Bitnami Application Catalog.
 
 ## Prerequisites
 
@@ -89,13 +91,14 @@ The command removes all the Kubernetes components associated with the chart and 
 | --------------------------------------------------- | ---------------------------------------------------------------------------------------------------------- | --------------------- |
 | `image.registry`                                    | ClickHouse image registry                                                                                  | `docker.io`           |
 | `image.repository`                                  | ClickHouse image repository                                                                                | `bitnami/clickhouse`  |
-| `image.tag`                                         | ClickHouse image tag (immutable tags are recommended)                                                      | `23.4.2-debian-11-r7` |
+| `image.tag`                                         | ClickHouse image tag (immutable tags are recommended)                                                      | `23.9.1-debian-11-r0` |
 | `image.digest`                                      | ClickHouse image digest in the way sha256:aa.... Please note this parameter, if set, will override the tag | `""`                  |
 | `image.pullPolicy`                                  | ClickHouse image pull policy                                                                               | `IfNotPresent`        |
 | `image.pullSecrets`                                 | ClickHouse image pull secrets                                                                              | `[]`                  |
 | `image.debug`                                       | Enable ClickHouse image debug mode                                                                         | `false`               |
 | `shards`                                            | Number of ClickHouse shards to deploy                                                                      | `2`                   |
 | `replicaCount`                                      | Number of ClickHouse replicas per shard to deploy                                                          | `3`                   |
+| `distributeReplicasByZone`                          | Schedules replicas of the same shard to different availability zones                                       | `false`               |
 | `containerPorts.http`                               | ClickHouse HTTP container port                                                                             | `8123`                |
 | `containerPorts.https`                              | ClickHouse HTTPS container port                                                                            | `8443`                |
 | `containerPorts.tcp`                                | ClickHouse TCP container port                                                                              | `9000`                |
@@ -154,6 +157,9 @@ The command removes all the Kubernetes components associated with the chart and 
 | `extraOverrides`                | Extra configuration overrides (evaluated as a template) apart from the default                                           | `""`                    |
 | `extraOverridesConfigmap`       | The name of an existing ConfigMap with extra configuration for ClickHouse                                                | `""`                    |
 | `extraOverridesSecret`          | The name of an existing ConfigMap with your custom configuration for ClickHouse                                          | `""`                    |
+| `usersExtraOverrides`           | Users extra configuration overrides (evaluated as a template) apart from the default                                     | `""`                    |
+| `usersExtraOverridesConfigmap`  | The name of an existing ConfigMap with users extra configuration for ClickHouse                                          | `""`                    |
+| `usersExtraOverridesSecret`     | The name of an existing ConfigMap with your custom users configuration for ClickHouse                                    | `""`                    |
 | `initdbScripts`                 | Dictionary of initdb scripts                                                                                             | `{}`                    |
 | `initdbScriptsSecret`           | ConfigMap with the initdb scripts (Note: Overrides `initdbScripts`)                                                      | `""`                    |
 | `startdbScripts`                | Dictionary of startdb scripts                                                                                            | `{}`                    |
@@ -242,7 +248,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | `externalAccess.service.ports.interserver`        | ClickHouse service Interserver port                                                                                              | `9009`                   |
 | `externalAccess.service.ports.metrics`            | ClickHouse service metrics port                                                                                                  | `8001`                   |
 | `externalAccess.service.loadBalancerIPs`          | Array of load balancer IPs for each ClickHouse . Length must be the same as replicaCount                                         | `[]`                     |
-| `externalAccess.service.loadBalancerAnnotations`  | Array of load balancer annotations for each ClickHouse . Length must be the same as replicaCount                                 | `[]`                     |
+| `externalAccess.service.loadBalancerAnnotations`  | Array of load balancer annotations for each ClickHouse . Length must be the same as shards multiplied by replicaCount            | `[]`                     |
 | `externalAccess.service.loadBalancerSourceRanges` | Address(es) that are allowed when service is LoadBalancer                                                                        | `[]`                     |
 | `externalAccess.service.nodePorts.http`           | Node port for HTTP                                                                                                               | `[]`                     |
 | `externalAccess.service.nodePorts.https`          | Node port for HTTPS                                                                                                              | `[]`                     |
@@ -275,30 +281,31 @@ The command removes all the Kubernetes components associated with the chart and 
 
 ### Persistence Parameters
 
-| Name                       | Description                                                            | Value               |
-| -------------------------- | ---------------------------------------------------------------------- | ------------------- |
-| `persistence.enabled`      | Enable persistence using Persistent Volume Claims                      | `true`              |
-| `persistence.storageClass` | Storage class of backing PVC                                           | `""`                |
-| `persistence.labels`       | Persistent Volume Claim labels                                         | `{}`                |
-| `persistence.annotations`  | Persistent Volume Claim annotations                                    | `{}`                |
-| `persistence.accessModes`  | Persistent Volume Access Modes                                         | `["ReadWriteOnce"]` |
-| `persistence.size`         | Size of data volume                                                    | `8Gi`               |
-| `persistence.selector`     | Selector to match an existing Persistent Volume for WordPress data PVC | `{}`                |
-| `persistence.dataSource`   | Custom PVC data source                                                 | `{}`                |
+| Name                        | Description                                                             | Value               |
+| --------------------------- | ----------------------------------------------------------------------- | ------------------- |
+| `persistence.enabled`       | Enable persistence using Persistent Volume Claims                       | `true`              |
+| `persistence.existingClaim` | Name of an existing PVC to use                                          | `""`                |
+| `persistence.storageClass`  | Storage class of backing PVC                                            | `""`                |
+| `persistence.labels`        | Persistent Volume Claim labels                                          | `{}`                |
+| `persistence.annotations`   | Persistent Volume Claim annotations                                     | `{}`                |
+| `persistence.accessModes`   | Persistent Volume Access Modes                                          | `["ReadWriteOnce"]` |
+| `persistence.size`          | Size of data volume                                                     | `8Gi`               |
+| `persistence.selector`      | Selector to match an existing Persistent Volume for ClickHouse data PVC | `{}`                |
+| `persistence.dataSource`    | Custom PVC data source                                                  | `{}`                |
 
 ### Init Container Parameters
 
-| Name                                                   | Description                                                                                     | Value                   |
-| ------------------------------------------------------ | ----------------------------------------------------------------------------------------------- | ----------------------- |
-| `volumePermissions.enabled`                            | Enable init container that changes the owner/group of the PV mount point to `runAsUser:fsGroup` | `false`                 |
-| `volumePermissions.image.registry`                     | Bitnami Shell image registry                                                                    | `docker.io`             |
-| `volumePermissions.image.repository`                   | Bitnami Shell image repository                                                                  | `bitnami/bitnami-shell` |
-| `volumePermissions.image.tag`                          | Bitnami Shell image tag (immutable tags are recommended)                                        | `11-debian-11-r117`     |
-| `volumePermissions.image.pullPolicy`                   | Bitnami Shell image pull policy                                                                 | `IfNotPresent`          |
-| `volumePermissions.image.pullSecrets`                  | Bitnami Shell image pull secrets                                                                | `[]`                    |
-| `volumePermissions.resources.limits`                   | The resources limits for the init container                                                     | `{}`                    |
-| `volumePermissions.resources.requests`                 | The requested resources for the init container                                                  | `{}`                    |
-| `volumePermissions.containerSecurityContext.runAsUser` | Set init container's Security Context runAsUser                                                 | `0`                     |
+| Name                                                   | Description                                                                                     | Value              |
+| ------------------------------------------------------ | ----------------------------------------------------------------------------------------------- | ------------------ |
+| `volumePermissions.enabled`                            | Enable init container that changes the owner/group of the PV mount point to `runAsUser:fsGroup` | `false`            |
+| `volumePermissions.image.registry`                     | OS Shell + Utility image registry                                                               | `docker.io`        |
+| `volumePermissions.image.repository`                   | OS Shell + Utility image repository                                                             | `bitnami/os-shell` |
+| `volumePermissions.image.tag`                          | OS Shell + Utility image tag (immutable tags are recommended)                                   | `11-debian-11-r83` |
+| `volumePermissions.image.pullPolicy`                   | OS Shell + Utility image pull policy                                                            | `IfNotPresent`     |
+| `volumePermissions.image.pullSecrets`                  | OS Shell + Utility image pull secrets                                                           | `[]`               |
+| `volumePermissions.resources.limits`                   | The resources limits for the init container                                                     | `{}`               |
+| `volumePermissions.resources.requests`                 | The requested resources for the init container                                                  | `{}`               |
+| `volumePermissions.containerSecurityContext.runAsUser` | Set init container's Security Context runAsUser                                                 | `0`                |
 
 ### Other Parameters
 
@@ -321,6 +328,10 @@ The command removes all the Kubernetes components associated with the chart and 
 | `metrics.serviceMonitor.metricRelabelings`    | Specify additional relabeling of metrics                                                               | `[]`    |
 | `metrics.serviceMonitor.relabelings`          | Specify general relabeling                                                                             | `[]`    |
 | `metrics.serviceMonitor.selector`             | Prometheus instance selector labels                                                                    | `{}`    |
+| `metrics.prometheusRule.enabled`              | Create a PrometheusRule for Prometheus Operator                                                        | `false` |
+| `metrics.prometheusRule.namespace`            | Namespace for the PrometheusRule Resource (defaults to the Release Namespace)                          | `""`    |
+| `metrics.prometheusRule.additionalLabels`     | Additional labels that can be used so PrometheusRule will be discovered by Prometheus                  | `{}`    |
+| `metrics.prometheusRule.rules`                | PrometheusRule definitions                                                                             | `[]`    |
 
 ### External Zookeeper paramaters
 
@@ -331,11 +342,15 @@ The command removes all the Kubernetes components associated with the chart and 
 
 ### Zookeeper subchart parameters
 
-| Name                             | Description                   | Value  |
-| -------------------------------- | ----------------------------- | ------ |
-| `zookeeper.enabled`              | Deploy Zookeeper subchart     | `true` |
-| `zookeeper.replicaCount`         | Number of Zookeeper instances | `3`    |
-| `zookeeper.service.ports.client` | Zookeeper client port         | `2181` |
+| Name                             | Description                                          | Value                 |
+| -------------------------------- | ---------------------------------------------------- | --------------------- |
+| `zookeeper.enabled`              | Deploy Zookeeper subchart                            | `true`                |
+| `zookeeper.replicaCount`         | Number of Zookeeper instances                        | `3`                   |
+| `zookeeper.service.ports.client` | Zookeeper client port                                | `2181`                |
+| `zookeeper.image.registry`       | Zookeeper image registry                             | `docker.io`           |
+| `zookeeper.image.repository`     | Zookeeper image repository                           | `bitnami/zookeeper`   |
+| `zookeeper.image.tag`            | Zookeeper image tag (immutable tags are recommended) | `3.8.2-debian-11-r61` |
+| `zookeeper.image.pullPolicy`     | Zookeeper image pull policy                          | `IfNotPresent`        |
 
 See <https://github.com/bitnami-labs/readme-generator-for-helm> to create the table.
 
@@ -495,7 +510,7 @@ This major updates the Zookeeper subchart to it newest major, 11.0.0. For more i
 
 ## License
 
-Copyright &copy; 2023 VMware Inc
+Copyright &copy; 2023 VMware, Inc.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
